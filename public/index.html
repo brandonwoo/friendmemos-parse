@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:ng="friendmemos">
+  <head>
+    <script type="text/javascript">if (window.location.hash == '#_=_')window.location.hash = '';</script>
+    <title>Friend Memos</title>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=1">
+    <link href="/style.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+  </head>
+  <body>
+    <div ng-view>
+    </div>
+  </body>
+
+  <script type="text/ng-template" id="partials/navbar.html">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <ul class="nav nav-pills">
+            <li>
+              <a href="/#/home">Friends</a>
+            </li>
+          </ul>
+          <ul class="nav nav-pills pull-right">
+            <li>
+              <a href="/#/logout">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </script>
+  <script type="text/ng-template" id="partials/home.html">
+    <ng:include src="'partials/navbar.html'"></ng:include>
+    <div id="content" class="container">
+      <div class="row">
+        <div class="span12">
+          <form class="form-search">
+             <input ng-model="query" class="span12">
+          </form>
+        </div>
+      </div>
+      <div class="row" ng-show="showMainList">
+        <div class="span12" ng-show="friends">
+          <ul class="nav nav-tabs nav-stacked" infinite-scroll='loadMore()' infinite-scroll-distance='2'>
+            <li ng-repeat="friend in friends">
+              <a href="/#/friends/{{friend.uid}}">{{friend.first_name}} {{friend.middle_name}} {{friend.last_name}}</a>
+            </li>
+          </ul>
+        </div>
+        <div class="span12" ng-hide="friends">
+          <img src="/images/ajaxloader.gif"></img>
+        </div>
+      </div>
+      <div class="row" ng-hide="showMainList">
+        <div class="span12" ng-show="searchListResults">
+          <ul class="nav nav-tabs nav-stacked">
+            <li ng-repeat="result in searchListResults">
+              <a href="/#/friends/{{result.uid}}">{{result.first_name}} {{result.middle_name}} {{result.last_name}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </script>
+  <script type="text/ng-template" id="partials/memo.html">
+    <ng:include src="'partials/navbar.html'"></ng:include>
+    <div id="content" class="container">
+      <div class="row">
+        <div class="span12">
+          <h4>{{ pageName }}</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span12" ng-show="memo">
+          <form class="form-horizontal">
+            <div class="control-group">
+              <textarea rows="5" ng-model="memo.text" value="{{memo.text}}" class="span12"></textarea>
+            </div>
+            <button class="btn" ng-click="saveMemo()" ng-disabled="saveButtonDisabled">Save</button>
+          </form>
+        </div>
+        <div class="span12" ng-hide="memo">
+          <img src="/images/ajaxloader.gif"></img>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span12">
+          <a href="/#/">Back to friends list</a>
+        </div>
+      </div>
+    </div>
+  </script>
+  <script type="text/ng-template" id="partials/login.html">
+    <div id="content" class="container" ng-show="display">
+      <div class="row">
+        <div class="span12">
+          <h3>Friend Memos</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span12">
+          <button class="btn" type="submit" ng-click="login()">Login</button>
+        </div>
+      </div>
+    </div>
+  </script>
+  <script type="text/ng-template" id="partials/logout.html">
+    <div id="content" class="container">
+      <div class="row">
+        <div class="span12">
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <!-- Third party libraries from CDN -->
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+  <script src="/js/ng-infinite-scroll.min.js"></script>
+  
+  <div id="fb-root"></div>
+  <script src="http://www.parsecdn.com/js/parse-1.2.8.min.js"></script>
+  <script src="/js/clientEnv.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    Parse.initialize(
+      PARSE_APP_ID, 
+      PARSE_JAVASCRIPT_KEY
+    );
+
+    window.fbAsyncInit = function() {
+      angular.bootstrap(document, ['friendmemos']);
+    };
+    
+    //load fb sdk asynchronously
+    (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/all.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  </script>
+</html>
+<!DOCTYPE html>

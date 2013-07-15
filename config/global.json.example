@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "_default": {
+            "link": "your-parse-app-name"
+        }, 
+        "friendmemos": {
+            "applicationId": "your-parse-application-id", 
+            "masterKey": "your-parse-master-key"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.8"
+    }
+}
