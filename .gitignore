@@ -3,3 +3,4 @@
 .env
 global.json
 clientEnv.js
+node_modules
